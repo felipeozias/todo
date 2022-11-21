@@ -1,20 +1,19 @@
 fn main() {
-    println!("🖋  Você deseja adicionar um novo TODO? (Responta do s ou n)");
-    let mut input_user: String = input();
+    let mut todo_add: String;
 
-    while input_user != "n" && input_user != "N" {
+    loop {
+        println!("🖋  Você deseja adicionar um novo TODO? (Responta do s ou n)");
+        let input_user:String = input();
+
+        if input_user.to_lowercase() == "n" {
+            break;
+        }
+
         println!("Digite o seu TODO abaixo: ⤵ ");
-        let todo_add: String = input();
+        todo_add = input();
         println!("--------------------------------------------");
         println!("✅ 🟢 O TODO adicionado foi: '{}' 🟢", todo_add);
         println!("--------------------------------------------");
-
-        println!("🖋  Você deseja adicionar um novo TODO? (Responta do s ou n)");
-        input_user = input();
-
-        if input_user == "n" || input_user == "N" {
-            return;
-        }
     }
 }
 
