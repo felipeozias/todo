@@ -1,7 +1,7 @@
 fn main() {
-    let mut todo_add: String;
-
     loop {
+        let todo_add: String;
+
         println!("🖋  Você deseja adicionar um novo TODO? (Responta do s ou n)");
         let input_user = input();
 
