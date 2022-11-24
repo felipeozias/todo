@@ -3,7 +3,7 @@ fn main() {
 
     loop {
         println!("🖋  Você deseja adicionar um novo TODO? (Responta do s ou n)");
-        let input_user:String = input();
+        let input_user = input();
 
         if input_user.to_lowercase() == "n" {
             break;
