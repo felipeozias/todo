@@ -1,7 +1,5 @@
 fn main() {
     loop {
-        let todo_add: String;
-
         println!("🖋  Você deseja adicionar um novo TODO? (Responta do s ou n)");
         let input_user = input();
 
@@ -10,7 +8,7 @@ fn main() {
         }
 
         println!("Digite o seu TODO abaixo: ⤵ ");
-        todo_add = input();
+        let todo_add = input();
         println!("--------------------------------------------");
         println!("✅ 🟢 O TODO adicionado foi: '{}' 🟢", todo_add);
         println!("--------------------------------------------");
