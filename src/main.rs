@@ -1,3 +1,5 @@
+use std::io::{ Stdin, Stdout, Write };
+
 fn main() {
     loop {
         let mut terminal1 = Terminal::new();
@@ -17,8 +19,6 @@ impl Todo {
     }
 }
 
-use std::io::{ Stdin, Stdout, Write };
-
 struct Terminal {
     stdin: Stdin,
     stdout: Stdout,
@@ -34,11 +34,7 @@ impl Terminal {
 
     fn ask_for_new_todo(&mut self) -> Todo {
 
-        println!("🖋  Você deseja adicionar um novo TODO? (Responta do s ou n)");
-        let mut buf = String::new();
-        self.stdin.read_line(&mut buf).unwrap();
-
-        if buf.trim().to_string().to_lowercase() == "n" {
+        if self.should_ask_for_new_todo() == false {
             std::process::exit(0);
         } else {
             let mut todo_add = String::new();
@@ -48,9 +44,28 @@ impl Terminal {
         }
     }
 
+    fn should_ask_for_new_todo(&mut self) -> bool {
+        loop {
+
+            println!("🖋  Você deseja adicionar um novo TODO? (Responta do s para SIM ou n para NÃO)");
+
+            let mut buf = String::new();
+            self.stdin.read_line(&mut buf).unwrap();
+            let response = buf.trim().to_lowercase();
+
+            if response == "n" {
+                break false;
+            } else if response == "s" {
+                break true;
+            } else {
+                println!("Não entendi sua resposta 😕");
+            }
+        }
+    }
+
     fn show_todo(&mut self, todo: &Todo) {
-        println!("----------------------------------------------------");
+        writeln!(self.stdout,"----------------------------------------------------");
         writeln!(self.stdout, "✅ 🟢 O TODO adicionado foi: '{}' 🟢", todo.message).unwrap();
-        println!("----------------------------------------------------");
+        writeln!(self.stdout,"----------------------------------------------------");
     }
 }
