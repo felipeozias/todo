@@ -33,8 +33,7 @@ impl Terminal {
     }
 
     fn ask_for_new_todo(&mut self) -> Todo {
-
-        if self.should_ask_for_new_todo() == false {
+        if !self.should_ask_for_new_todo() {
             std::process::exit(0);
         } else {
             writeln!(self.stdout,"Digite o seu TODO abaixo: ⤵ ").unwrap();
