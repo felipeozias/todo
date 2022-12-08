@@ -37,35 +37,37 @@ impl Terminal {
         if self.should_ask_for_new_todo() == false {
             std::process::exit(0);
         } else {
-            let mut todo_add = String::new();
-            println!("Digite o seu TODO abaixo: ⤵ ");
-            self.stdin.read_line(&mut todo_add).unwrap();
-            Todo::new(todo_add.trim().to_string())
+            writeln!(self.stdout,"Digite o seu TODO abaixo: ⤵ ").unwrap();
+            Todo::new(self.input_terminal())
         }
     }
 
     fn should_ask_for_new_todo(&mut self) -> bool {
+        
         loop {
+            writeln!(self.stdout,"🖋  Você deseja adicionar um novo TODO? (Responda s para SIM ou n para NÃO)").unwrap();
 
-            println!("🖋  Você deseja adicionar um novo TODO? (Responta do s para SIM ou n para NÃO)");
-
-            let mut buf = String::new();
-            self.stdin.read_line(&mut buf).unwrap();
-            let response = buf.trim().to_lowercase();
+            let response = self.input_terminal().to_lowercase();
 
             if response == "n" {
                 break false;
             } else if response == "s" {
                 break true;
             } else {
-                println!("Não entendi sua resposta 😕");
+                writeln!(self.stdout,"Não entendi sua resposta 😕").unwrap();
             }
         }
     }
 
     fn show_todo(&mut self, todo: &Todo) {
-        writeln!(self.stdout,"----------------------------------------------------");
+        writeln!(self.stdout,"---------------------------------------------------").unwrap();
         writeln!(self.stdout, "✅ 🟢 O TODO adicionado foi: '{}' 🟢", todo.message).unwrap();
-        writeln!(self.stdout,"----------------------------------------------------");
+        writeln!(self.stdout,"---------------------------------------------------").unwrap();
+    }
+
+    fn input_terminal(&mut self) -> String{
+        let mut buf = String::new();
+        self.stdin.read_line(&mut buf).unwrap();
+        buf.trim().to_string()
     }
 }
