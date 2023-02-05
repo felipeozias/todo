@@ -1,27 +1,31 @@
-use std::io::{ Stdin, Stdout, Write, Error };
+use std::{
+    fmt::format,
+    io::{Error, Stdin, Stdout, Write},
+};
 
 fn main() {
     let terminal = Terminal::new();
     start_todo(terminal);
 }
 
-fn start_todo(mut terminal:Terminal) {
+fn start_todo(mut terminal: Terminal) {
     loop {
         let todo = terminal.ask_for_new_todo();
 
         match &todo {
-            Ok(t) => {
-                match t {
-                    Some(value) => {
-                        let _result = terminal.show_todo(value);
-                    }
-                    None => {
-                        break;
-                    }
+            Ok(t) => match t {
+                Some(value) => {
+                    let _result = terminal.show_todo(value);
                 }
-            }
+                None => {
+                    break;
+                }
+            },
             Err(_e) => {
-                break println!("Ocorreu um erro, contacte o administrador. Erro: {:?}", &todo);
+                break println!(
+                    "Ocorreu um erro, contacte o administrador. Erro: {:?}",
+                    &todo
+                );
             }
         }
     }
@@ -52,74 +56,59 @@ impl Terminal {
     }
 
     fn ask_for_new_todo(&mut self) -> Result<Option<Todo>, TerminalError> {
-        let response = self.should_ask_for_new_todo();
+        let response = self.should_ask_for_new_todo()?;
 
-        match response {
-            Ok(value) => {
-                if !value {
-                    Ok(None)
-                } else {
-                    writeln!(self.stdout, "Digite o seu TODO abaixo: ⤵ ").map_err(
-                        TerminalError::Stdout
-                    )?;
+        if !response {
+            Ok(None)
+        } else {
+            self.print_str("Digite o seu TODO abaixo: ⤵ ")?;
 
-                    let response = self.input_terminal();
-
-                    match response {
-                        Ok(t) => { Ok(Some(Todo::new(t))) }
-                        Err(error) => Err(error),
-                    }
-                }
-            }
-            Err(error) => Err(error),
+            let value = self.input_terminal()?;
+            Ok(Some(Todo::new(value)))
         }
     }
 
     fn should_ask_for_new_todo(&mut self) -> Result<bool, TerminalError> {
         loop {
-            writeln!(
-                self.stdout,
-                "🖋  Você deseja adicionar um novo TODO? (Responda s para SIM ou n para NÃO)"
-            ).map_err(TerminalError::Stdout)?;
+            self.print_str(
+                "🖋  Você deseja adicionar um novo TODO? (Responda s para SIM ou n para NÃO)",
+            )?;
 
-            let response = self.input_terminal();
+            let response = self.input_terminal()?;
 
-            match response {
-                Ok(t) => {
-                    if t.to_lowercase() == "n" {
-                        break Ok(false);
-                    } else if t.to_lowercase() == "s" {
-                        break Ok(true);
-                    } else {
-                        writeln!(self.stdout, "Não entendi sua resposta 😕").map_err(
-                            TerminalError::Stdout
-                        )?;
-                    }
-                }
-                Err(error) => {
-                    break Err(error);
-                }
+            match response.to_lowercase().as_str() {
+                "n" => return Ok(false),
+                "s" => return Ok(true),
+                _ => self.print_str("Não entendi sua resposta 😕")?,
             }
         }
     }
 
     fn show_todo(&mut self, todo: &Todo) -> Result<(), TerminalError> {
-        writeln!(self.stdout, "---------------------------------------------------").map_err(
-            TerminalError::Stdout
+        self.print_str("---------------------------------------------------")?;
+        self.print_str(
+            format(format_args!(
+                "✅ 🟢 O TODO adicionado foi: '{}' 🟢",
+                todo.message
+            ))
+            .as_str(),
         )?;
-        writeln!(self.stdout, "✅ 🟢 O TODO adicionado foi: '{}' 🟢", todo.message).map_err(
-            TerminalError::Stdout
-        )?;
-        writeln!(self.stdout, "---------------------------------------------------").map_err(
-            TerminalError::Stdout
-        )?;
+        self.print_str("---------------------------------------------------")?;
+
         Ok(())
     }
 
     fn input_terminal(&mut self) -> Result<String, TerminalError> {
         let mut buf = String::new();
-        self.stdin.read_line(&mut buf).map_err(TerminalError::Stdin)?;
+        self.stdin
+            .read_line(&mut buf)
+            .map_err(TerminalError::Stdin)?;
         Ok(buf.trim().to_string())
+    }
+
+    fn print_str(&mut self, s: &str) -> Result<(), TerminalError> {
+        writeln!(self.stdout, "{}", s).map_err(TerminalError::Stdout)?;
+        Ok(())
     }
 }
 
