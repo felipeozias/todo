@@ -1,7 +1,4 @@
-use std::{
-    fmt::format,
-    io::{Error, Stdin, Stdout, Write},
-};
+use std::io::{Error, Stdin, Stdout, Write};
 
 fn main() {
     let terminal = Terminal::new();
@@ -86,13 +83,7 @@ impl Terminal {
 
     fn show_todo(&mut self, todo: &Todo) -> Result<(), TerminalError> {
         self.print_str("---------------------------------------------------")?;
-        self.print_str(
-            format(format_args!(
-                "✅ 🟢 O TODO adicionado foi: '{}' 🟢",
-                todo.message
-            ))
-            .as_str(),
-        )?;
+        self.print_str(format!("✅ 🟢 O TODO adicionado foi: '{}' 🟢", todo.message).as_str())?;
         self.print_str("---------------------------------------------------")?;
 
         Ok(())
