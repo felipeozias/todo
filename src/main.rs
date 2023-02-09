@@ -2,28 +2,25 @@ use std::io::{Error, Stdin, Stdout, Write};
 
 fn main() {
     let terminal = Terminal::new();
-    start_todo(terminal);
+    let result = start_todo(terminal);
+
+    match result {
+        Ok(_) => (),
+        Err(err) => println!(
+            "Ocorreu um erro, contacte o administrador. Erro: {:?}",
+            &err
+        ),
+    }
 }
 
-fn start_todo(mut terminal: Terminal) {
+fn start_todo(mut terminal: Terminal) -> Result<(), TerminalError> {
     loop {
-        let todo = terminal.ask_for_new_todo();
-
-        match &todo {
-            Ok(t) => match t {
-                Some(value) => {
-                    let _result = terminal.show_todo(value);
-                }
-                None => {
-                    break;
-                }
-            },
-            Err(_e) => {
-                break println!(
-                    "Ocorreu um erro, contacte o administrador. Erro: {:?}",
-                    &todo
-                );
+        let todo = terminal.ask_for_new_todo()?;
+        match todo {
+            Some(value) => {
+                _ = terminal.show_todo(&value);
             }
+            None => return Ok(()),
         }
     }
 }
