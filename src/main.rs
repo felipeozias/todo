@@ -4,12 +4,11 @@ fn main() {
     let terminal = Terminal::new();
     let result = start_todo(terminal);
 
-    match result {
-        Ok(_) => (),
-        Err(err) => println!(
+    if let Err(error) = result {
+        println!(
             "Ocorreu um erro, contacte o administrador. Erro: {:?}",
-            &err
-        ),
+            &error
+        )
     }
 }
 
