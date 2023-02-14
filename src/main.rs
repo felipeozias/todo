@@ -15,10 +15,9 @@ fn main() {
 fn start_todo(mut terminal: Terminal) -> Result<(), TerminalError> {
     loop {
         let todo = terminal.ask_for_new_todo()?;
+
         match todo {
-            Some(value) => {
-                _ = terminal.show_todo(&value);
-            }
+            Some(value) => terminal.show_todo(&value)?,
             None => return Ok(()),
         }
     }
